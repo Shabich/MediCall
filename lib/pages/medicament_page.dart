@@ -46,7 +46,6 @@ class _MedicamentListPageState extends State<MedicamentListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Liste des Médicaments')),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error.isNotEmpty

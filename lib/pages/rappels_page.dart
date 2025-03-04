@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../layout.dart';
 
 class ReminderListPage extends StatefulWidget {
   const ReminderListPage({super.key});
@@ -19,8 +18,8 @@ class _ReminderListPageState extends State<ReminderListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AppLayout(
-      child: Column(
+    return Scaffold(
+      body: Column(
         children: [
           Expanded(
             child: ListView.builder(

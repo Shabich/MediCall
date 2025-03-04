@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../layout.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -49,8 +48,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AppLayout(
-      child: Center(
+    return Scaffold(
+      appBar: AppBar(title: const Text("Inscription")),
+      body: Center(
         child: SingleChildScrollView(
           // Ajouté pour éviter le débordement
           child: Padding(
@@ -58,17 +58,17 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const Center(
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage('lib/assets/woman.png'),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 Form(
                   key: _formKey,
                   child: Column(
                     children: [
-                      const Center(
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundImage: AssetImage('lib/assets/woman.png'),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
                       _buildProfileField('Nom', _nameController),
                       _buildProfileField('Prénom', _firstNameController),
                       _buildProfileField('Email', _emailController),
@@ -83,7 +83,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         onPressed: () {
                           if (_formKey.currentState?.validate() ?? false) {
                             Navigator.pushReplacementNamed(
-                                context, '/medications');
+                                context, '/medicaments');
                           }
                         },
                         child: const Text('S\'inscrire'),

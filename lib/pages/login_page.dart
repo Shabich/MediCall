@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../layout.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,8 +14,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AppLayout(
-      child: Center(
+    return Scaffold(
+      appBar: AppBar(title: const Text('Connexion')),
+      body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
                           Navigator.pushReplacementNamed(
-                              context, '/medications');
+                              context, '/medicaments');
                         }
                       },
                       child: const Text('Se connecter'),

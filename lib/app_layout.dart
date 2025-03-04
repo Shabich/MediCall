@@ -7,7 +7,10 @@ class AppLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        // Titre et bouton de menu burger
+        title: const Text('MediCall'),
+      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -15,19 +18,12 @@ class AppLayout extends StatelessWidget {
             DrawerHeader(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image:
-                      AssetImage('lib/assets/fondBurger.jpg'), // Image locale
-                  fit: BoxFit
-                      .cover, // Ajuste l'image pour qu'elle couvre tout l'espace
+                  image: AssetImage('lib/assets/fondBurger.jpg'),
+                  fit: BoxFit.cover,
                 ),
               ),
               child: Align(
-                alignment:
-                    Alignment.bottomLeft, // Positionne le texte en bas à gauche
-                child: Padding(
-                  padding: const EdgeInsets.all(
-                      16.0), // Ajouter un peu d'espace autour du texte
-                ),
+                alignment: Alignment.bottomLeft,
               ),
             ),
             ListTile(
@@ -35,7 +31,7 @@ class AppLayout extends StatelessWidget {
               title: const Text('Accueil'),
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.pushReplacementNamed(context, '/');
+                Navigator.pushReplacementNamed(context, '/home');
               },
             ),
             const Divider(),
@@ -57,7 +53,7 @@ class AppLayout extends StatelessWidget {
             ),
             const Divider(),
             ListTile(
-              leading: const Icon(Icons.list),
+              leading: const Icon(Icons.notifications),
               title: const Text('Rappels'),
               onTap: () {
                 Navigator.of(context).pop();
@@ -67,9 +63,17 @@ class AppLayout extends StatelessWidget {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: child,
+      body: Stack(
+        children: [
+          // Contenu de la page (derrière le Drawer)
+          Positioned.fill(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: child,
+            ),
+          ),
+          // Le Drawer ne sera plus visible ici, il est contrôlé par le bouton burger de l'AppBar
+        ],
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'route.dart';
+import 'pages/login_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false, // Désactive la banderole "Debug"
-
       initialRoute: '/',
       routes: appRoutes,
     );

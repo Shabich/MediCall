@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../layout.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -26,65 +25,57 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return AppLayout(
-      child: Stack(
-        children: [
-          // Image de fond fixe
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 100), // Espace pour l'image de profil
-                const Center(
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage('lib/assets/boy.png'),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                // Nom
-                _buildProfileField('Nom', _nameController),
-                _buildProfileField('Prénom', _firstNameController),
-                _buildProfileField('Email', _emailController),
-                _buildProfileField('Adresse', _addressController),
-                _buildProfileField('Téléphone', _phoneController),
-                _buildProfileField('Date de naissance', _birthDateController),
-
-                const SizedBox(height: 20),
-
-                // Bouton Modifier le profil
-                ElevatedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _isEditing = !_isEditing;
-                    });
-                  },
-                  icon: const Icon(Icons.edit),
-                  label: Text(_isEditing
-                      ? 'Sauvegarder le profil'
-                      : 'Modifier le profil'),
-                ),
-                const SizedBox(height: 20),
-
-                // Bouton Déconnexion
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/');
-                  },
-                  icon: const Icon(Icons.logout, color: Colors.red),
-                  label: const Text(
-                    'Se déconnecter',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    side: const BorderSide(color: Colors.red),
-                  ),
-                ),
-              ],
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage: AssetImage('lib/assets/boy.png'),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            // Nom
+            _buildProfileField('Nom', _nameController),
+            _buildProfileField('Prénom', _firstNameController),
+            _buildProfileField('Email', _emailController),
+            _buildProfileField('Adresse', _addressController),
+            _buildProfileField('Téléphone', _phoneController),
+            _buildProfileField('Date de naissance', _birthDateController),
+            const SizedBox(height: 20),
+
+            // Bouton Modifier le profil
+            ElevatedButton.icon(
+              onPressed: () {
+                setState(() {
+                  _isEditing = !_isEditing;
+                });
+              },
+              icon: const Icon(Icons.edit),
+              label: Text(
+                  _isEditing ? 'Sauvegarder le profil' : 'Modifier le profil'),
+            ),
+            const SizedBox(height: 20),
+
+            // Bouton Déconnexion
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/');
+              },
+              icon: const Icon(Icons.logout, color: Colors.red),
+              label: const Text(
+                'Se déconnecter',
+                style: TextStyle(color: Colors.red),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                side: const BorderSide(color: Colors.red),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
