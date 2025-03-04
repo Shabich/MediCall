@@ -21,6 +21,8 @@ class _ProfilePageState extends State<ProfilePage> {
       TextEditingController(text: '+33 6 12 34 56 78');
   final TextEditingController _birthDateController =
       TextEditingController(text: '15/06/1990');
+  final TextEditingController _passwordController =
+      TextEditingController(text: 'password');
   bool _isEditing = false;
 
   @override
@@ -44,6 +46,10 @@ class _ProfilePageState extends State<ProfilePage> {
             _buildProfileField('Adresse', _addressController),
             _buildProfileField('Téléphone', _phoneController),
             _buildProfileField('Date de naissance', _birthDateController),
+            // Ajouter le champ mot de passe seulement en mode édition
+            if (_isEditing)
+              _buildProfileField('Mot de passe', _passwordController,
+                  isPassword: true),
             const SizedBox(height: 20),
 
             // Bouton Modifier le profil
@@ -81,7 +87,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   // Fonction pour afficher un champ de profil modifiable ou non
-  Widget _buildProfileField(String label, TextEditingController controller) {
+  Widget _buildProfileField(String label, TextEditingController controller,
+      {bool isPassword = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
@@ -103,6 +110,8 @@ class _ProfilePageState extends State<ProfilePage> {
             child: _isEditing
                 ? TextField(
                     controller: controller,
+                    obscureText:
+                        isPassword, // Masquer le texte si c'est un mot de passe
                     decoration: const InputDecoration(border: InputBorder.none),
                   )
                 : Text(
