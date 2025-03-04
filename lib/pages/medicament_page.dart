@@ -12,6 +12,7 @@ class MedicamentListPage extends StatefulWidget {
 class _MedicamentListPageState extends State<MedicamentListPage> {
   List<dynamic> _medicaments = [];
   List<dynamic> _categories = [];
+  List<dynamic> _filteredMedicaments = []; // Liste filtrée
   bool _isLoading = true;
   bool _isCategoriesLoading = true;
   String _error = '';
@@ -31,6 +32,8 @@ class _MedicamentListPageState extends State<MedicamentListPage> {
       if (response.statusCode == 200) {
         setState(() {
           _medicaments = json.decode(response.body);
+          _filteredMedicaments =
+              _medicaments; // Initialiser la liste filtrée avec tous les médicaments
           _isLoading = false;
         });
       } else {
@@ -70,12 +73,29 @@ class _MedicamentListPageState extends State<MedicamentListPage> {
     }
   }
 
+  // Fonction pour filtrer les médicaments par catégorie
+  void _filterMedicaments(String? categoryId) {
+    if (categoryId == null || categoryId.isEmpty) {
+      setState(() {
+        _filteredMedicaments =
+            _medicaments; // Afficher tous les médicaments si aucune catégorie n'est sélectionnée
+      });
+    } else {
+      setState(() {
+        // Comparaison avec id_t_categorie
+        _filteredMedicaments = _medicaments.where((medicament) {
+          return medicament['id_t_categorie'].toString() == categoryId;
+        }).toList(); // Filtrer selon la catégorie sélectionnée
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Historique d'achat"),
-        centerTitle: false, // Désactive le centrage automatique du titre
+        centerTitle: false,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -97,6 +117,8 @@ class _MedicamentListPageState extends State<MedicamentListPage> {
                                 setState(() {
                                   _selectedCategory = newValue;
                                 });
+                                _filterMedicaments(
+                                    newValue); // Filtrer les médicaments quand la catégorie change
                               },
                               items: _categories
                                   .map<DropdownMenuItem<String>>((category) {
@@ -107,65 +129,76 @@ class _MedicamentListPageState extends State<MedicamentListPage> {
                               }).toList(),
                             ),
                       const SizedBox(height: 10),
-                      // Liste des médicaments
+                      // Affichage des médicaments ou message si aucun médicament n'est trouvé
                       Expanded(
-                        child: ListView.builder(
-                          itemCount: _medicaments.length,
-                          itemBuilder: (context, index) {
-                            final medicament = _medicaments[index];
-                            return Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              elevation: 4,
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 12.0),
-                              child: ListTile(
-                                leading: SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    child: Image.network(
-                                      medicament['image_url'] ?? '',
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error,
-                                              stackTrace) =>
-                                          const Icon(Icons.image_not_supported),
+                        child: _filteredMedicaments.isEmpty
+                            ? Center(child: Text('Pas d\'application trouvée'))
+                            : ListView.builder(
+                                itemCount: _filteredMedicaments.length,
+                                itemBuilder: (context, index) {
+                                  final medicament =
+                                      _filteredMedicaments[index];
+                                  return Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
                                     ),
-                                  ),
-                                ),
-                                title: Text(
-                                  medicament['nom_produit'] ?? 'Nom inconnu',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        medicament['description'] ??
-                                            'Description non disponible',
+                                    elevation: 4,
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 12.0),
+                                    child: ListTile(
+                                      leading: SizedBox(
+                                        width: 50,
+                                        height: 50,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          child: Image.network(
+                                            medicament['image_url'] ?? '',
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error,
+                                                    stackTrace) =>
+                                                const Icon(
+                                                    Icons.image_not_supported),
+                                          ),
+                                        ),
+                                      ),
+                                      title: Text(
+                                        medicament['nom_produit'] ??
+                                            'Nom inconnu',
                                         style: const TextStyle(
-                                            fontSize: 12, color: Colors.grey)),
-                                    Text(
-                                        'Forme: ${medicament['forme'] ?? 'Inconnue'}',
-                                        style: const TextStyle(
-                                            fontSize: 12, color: Colors.grey)),
-                                    Text(
-                                        'Dosage: ${medicament['dosage'] ?? 'Non spécifié'}',
-                                        style: const TextStyle(
-                                            fontSize: 12, color: Colors.grey)),
-                                    Text(
-                                        'Laboratoire: ${medicament['laboratoire_fabriquant'] ?? 'Non spécifié'}',
-                                        style: const TextStyle(
-                                            fontSize: 12, color: Colors.grey)),
-                                  ],
-                                ),
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              medicament['description'] ??
+                                                  'Description non disponible',
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey)),
+                                          Text(
+                                              'Forme: ${medicament['forme'] ?? 'Inconnue'}',
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey)),
+                                          Text(
+                                              'Dosage: ${medicament['dosage'] ?? 'Non spécifié'}',
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey)),
+                                          Text(
+                                              'Laboratoire: ${medicament['laboratoire_fabriquant'] ?? 'Non spécifié'}',
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey)),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
                       ),
                     ],
                   ),
