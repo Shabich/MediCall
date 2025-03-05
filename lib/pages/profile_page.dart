@@ -63,23 +63,6 @@ class _ProfilePageState extends State<ProfilePage> {
               label: Text(
                   _isEditing ? 'Sauvegarder le profil' : 'Modifier le profil'),
             ),
-            const SizedBox(height: 20),
-
-            // Bouton Déconnexion
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
-              },
-              icon: const Icon(Icons.logout, color: Colors.red),
-              label: const Text(
-                'Se déconnecter',
-                style: TextStyle(color: Colors.red),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                side: const BorderSide(color: Colors.red),
-              ),
-            ),
           ],
         ),
       ),

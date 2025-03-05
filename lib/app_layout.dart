@@ -44,6 +44,23 @@ class AppLayout extends StatelessWidget {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.notifications),
+              title: const Text('Rappels'),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacementNamed(context, '/rappels');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.access_time),
+              title: const Text("Historique d'achat"),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacementNamed(context, '/historique');
+              },
+            ),
+            const Divider(),
+            ListTile(
               leading: const Icon(Icons.person),
               title: const Text('Profil'),
               onTap: () {
@@ -51,13 +68,12 @@ class AppLayout extends StatelessWidget {
                 Navigator.pushReplacementNamed(context, '/profile');
               },
             ),
-            const Divider(),
             ListTile(
-              leading: const Icon(Icons.notifications),
-              title: const Text('Rappels'),
+              leading: const Icon(Icons.lock_outline),
+              title: const Text('Se déconnecter'),
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.pushReplacementNamed(context, '/rappels');
+                Navigator.pushReplacementNamed(context, '/');
               },
             ),
           ],

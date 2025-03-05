@@ -94,7 +94,7 @@ class _MedicamentListPageState extends State<MedicamentListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Historique d'achat"),
+        title: const Text("Medicaments de GSB"),
         centerTitle: false,
       ),
       body: _isLoading
