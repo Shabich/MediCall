@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -9,21 +10,35 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   // Déclaration des contrôleurs pour chaque champ
-  final TextEditingController _nameController =
-      TextEditingController(text: 'Dupont');
-  final TextEditingController _firstNameController =
-      TextEditingController(text: 'Jean');
-  final TextEditingController _emailController =
-      TextEditingController(text: 'jean.dupont@example.com');
-  final TextEditingController _addressController =
-      TextEditingController(text: '12 rue des Lilas, Paris');
-  final TextEditingController _phoneController =
-      TextEditingController(text: '+33 6 12 34 56 78');
-  final TextEditingController _birthDateController =
-      TextEditingController(text: '15/06/1990');
-  final TextEditingController _passwordController =
-      TextEditingController(text: 'password');
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _birthDateController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData(); // Charger les données de l'utilisateur dès le démarrage
+  }
+
+  // Fonction pour charger les données depuis SharedPreferences
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      _nameController.text = prefs.getString('nom') ?? ''; // Nom
+      _firstNameController.text = prefs.getString('prenom') ?? ''; // Prénom
+      _emailController.text = prefs.getString('adresse_mail') ?? ''; // Email
+      _addressController.text = prefs.getString('adresse') ?? ''; // Adresse
+      _phoneController.text = prefs.getString('num_tel') ?? ''; // Téléphone
+      _birthDateController.text =
+          prefs.getString('date_naissance') ?? ''; // Date de naissance
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

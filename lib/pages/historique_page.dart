@@ -47,7 +47,7 @@ class _HistoriqueListPageState extends State<HistoriqueListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Historique des Prises"),
+        title: const Text("Historique des Commandes"),
         centerTitle: false,
       ),
       body: _isLoading

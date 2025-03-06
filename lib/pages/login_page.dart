@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,6 +15,84 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String? _errorMessage; // Variable pour stocker le message d'erreur
+
+  // Fonction pour enregistrer l'email dans SharedPreferences
+  Future<void> _saveUserData(Map<String, dynamic> userData) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      // Log: Affichage des données de l'utilisateur avant l'enregistrement
+      debugPrint('Données utilisateur avant enregistrement: $userData');
+
+      // Vérification et conversion de chaque donnée avant de la sauvegarder
+      final idTUser = userData['id_t_user'];
+      debugPrint('id_t_user: $idTUser, type: ${idTUser.runtimeType}');
+      if (idTUser is String) {
+        debugPrint('Conversion de id_t_user en int: $idTUser');
+        await prefs.setInt(
+            'id_t_user',
+            int.tryParse(idTUser) ??
+                0); // Si c'est une chaîne, essaie de la convertir en int
+      } else if (idTUser is int) {
+        await prefs.setInt('id_t_user',
+            idTUser); // Si c'est déjà un int, sauvegarde directement
+      }
+
+      // Pour les autres champs, assure-toi qu'ils sont correctement typés
+      final nom = userData['nom'];
+      debugPrint('nom: $nom, type: ${nom.runtimeType}');
+      await prefs.setString('nom', nom);
+
+      final prenom = userData['prenom'];
+      debugPrint('prenom: $prenom, type: ${prenom.runtimeType}');
+      await prefs.setString('prenom', prenom);
+
+      final adresseMail = userData['adresse_mail'];
+      debugPrint(
+          'adresse_mail: $adresseMail, type: ${adresseMail.runtimeType}');
+      await prefs.setString('adresse_mail', adresseMail);
+
+      final adresse = userData['adresse'];
+      debugPrint('adresse: $adresse, type: ${adresse.runtimeType}');
+      await prefs.setString('adresse', adresse);
+
+      final numTel = userData['num_tel'];
+      debugPrint('num_tel: $numTel, type: ${numTel.runtimeType}');
+      await prefs.setString('num_tel', numTel);
+
+      final dateNaissance = userData['date_naissance'];
+      debugPrint(
+          'date_naissance: $dateNaissance, type: ${dateNaissance.runtimeType}');
+      await prefs.setString('date_naissance', dateNaissance);
+
+      final password = userData['password'];
+      debugPrint('password: $password, type: ${password.runtimeType}');
+      await prefs.setString('password', password);
+
+      // Vérification de type pour 'admin' et 'id_t_rappel'
+      final admin = userData['admin'];
+      debugPrint('admin: $admin, type: ${admin.runtimeType}');
+      await prefs.setInt(
+          'admin',
+          admin is int
+              ? admin
+              : 0); // Si admin est un int, le sauvegarder, sinon utiliser 0.
+
+      final idTRappel = userData['id_t_rappel'];
+      debugPrint('id_t_rappel: $idTRappel, type: ${idTRappel.runtimeType}');
+      await prefs.setInt('id_t_rappel',
+          idTRappel is int ? idTRappel : 0); // Idem pour id_t_rappel.
+
+      // Sauvegarde toutes les données comme une chaîne JSON
+      String userDataJson = json.encode(userData);
+      debugPrint('User Data JSON: $userDataJson'); // Vérifie le JSON sauvegardé
+      await prefs.setString('user_data', userDataJson);
+
+      debugPrint("Données de l'utilisateur enregistrées avec succès.");
+    } catch (e) {
+      debugPrint("Erreur lors de l'accès à SharedPreferences: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +179,24 @@ class _LoginPageState extends State<LoginPage> {
                                 _errorMessage =
                                     null; // Réinitialiser le message d'erreur
                               });
+
+                              final dataUser = await http.post(
+                                Uri.parse(
+                                    'http://localhost:3000/api/users/info'),
+                                headers: {"Content-Type": "application/json"},
+                                body: jsonEncode({
+                                  "adresse_mail": email,
+                                  "password": password
+                                }),
+                              );
+
+                              // Enregistrer les données utilisateur dans SharedPreferences après la connexion
+
+                              var sentData = dataUser.body;
+                              debugPrint('$sentData datause');
+                              await _saveUserData(json.decode(dataUser
+                                  .body)); // Décoder la réponse JSON en Map
+
                               Navigator.pushReplacementNamed(
                                   context, '/medicaments');
                             } else {
