@@ -65,9 +65,10 @@ class _ReminderListPageState extends State<ReminderListPage> {
             children: [
               TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Nom du médicament',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20)),
                 ),
               ),
               const SizedBox(height: 10),

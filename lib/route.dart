@@ -3,7 +3,6 @@ import 'package:medicall/pages/historique_page.dart';
 import 'package:medicall/pages/home_page.dart';
 import 'pages/medicament_page.dart';
 import 'pages/signup_page.dart';
-import 'package:flutter/material.dart';
 import 'pages/login_page.dart';
 import 'pages/rappels_page.dart';
 import 'pages/profile_page.dart';
