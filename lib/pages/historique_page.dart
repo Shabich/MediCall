@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medicall/utils/reminder_storage.dart';
 import '../components/reminder_dialog.dart'; // Importez ReminderDialog ici
 import '../models/reminder.dart'; // Assurez-vous que le modèle Reminder est également importé
 
@@ -222,24 +223,37 @@ class _HistoriqueListPageState extends State<HistoriqueListPage> {
     );
   }
 
-  // Fonction pour ajouter un rappel (à adapter selon la logique de votre application)
-  // Fonction pour ajouter un rappel (affichage du ReminderDialog)
   void _addReminder(dynamic produit) {
-    print(
-        "Dialog d'ajout de rappel lancé"); // Débogage pour vérifier si la fonction est appelée
+    print("Dialog d'ajout de rappel lancé");
+
+    // Passe le nom du produit à ReminderDialog, ou une chaîne vide si le nom n'est pas disponible
+    String produitName = produit['nom_produit'] ?? '';
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return ReminderDialog(
           initialReminder: null,
-          onSave: (reminder) {
+          onSave: (reminder) async {
+            // Ajouter le nouveau rappel à la liste existante
+            List<Reminder> existingReminders =
+                await ReminderStorage.loadReminders();
+            existingReminders.add(reminder);
+
+            // Sauvegarder la liste mise à jour dans SharedPreferences
+            await ReminderStorage.saveReminders(existingReminders);
+
+            // Afficher un message de confirmation
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content:
-                      Text('Rappel ajouté pour ${produit['nom_produit']}!')),
+                content: Text('Rappel ajouté pour ${produit['nom_produit']}!'),
+              ),
             );
+
+            // Fermer le dialog après avoir ajouté le rappel
             Navigator.of(context).pop();
           },
+          produitName: produitName, // Ajoute le nom du produit ici
         );
       },
     );

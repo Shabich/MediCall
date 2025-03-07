@@ -36,6 +36,7 @@ class _ReminderPageState extends State<ReminderPage> {
           // Sauvegarder la nouvelle liste de rappels dans SharedPreferences
           await ReminderStorage.saveReminders(_reminders);
         },
+        produitName: '',
       ),
     );
   }
@@ -52,6 +53,7 @@ class _ReminderPageState extends State<ReminderPage> {
           // Sauvegarder la liste mise à jour dans SharedPreferences
           await ReminderStorage.saveReminders(_reminders);
         },
+        produitName: '',
       ),
     );
   }

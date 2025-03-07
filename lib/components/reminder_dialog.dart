@@ -4,8 +4,13 @@ import '../models/reminder.dart';
 class ReminderDialog extends StatefulWidget {
   final Reminder? initialReminder;
   final void Function(Reminder) onSave;
-
-  const ReminderDialog({super.key, this.initialReminder, required this.onSave});
+  final String produitName;
+  const ReminderDialog({
+    super.key,
+    this.initialReminder,
+    required this.onSave,
+    required this.produitName, // Ajoute le nom du produit ici
+  });
 
   @override
   _ReminderDialogState createState() => _ReminderDialogState();
@@ -23,6 +28,9 @@ class _ReminderDialogState extends State<ReminderDialog> {
       _nameController.text = widget.initialReminder!.name;
       _selectedTime = _parseTime(widget.initialReminder!.time);
       _selectedRecurrence = widget.initialReminder!.recurrence;
+    } else {
+      // Si aucun rappel initial n'est fourni, utilise le nom du produit
+      _nameController.text = widget.produitName;
     }
   }
 
