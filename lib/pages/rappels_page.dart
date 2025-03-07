@@ -8,17 +8,21 @@ class ReminderListPage extends StatefulWidget {
 }
 
 class _ReminderListPageState extends State<ReminderListPage> {
-  final List<Map<String, String>> _reminders = [
-    {'name': 'Paracétamol', 'time': '8h'},
-    {'name': 'Ibuprofène', 'time': '14h'},
-  ];
-
+  final List<Map<String, String>> _reminders = [];
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _timeController = TextEditingController();
+  TimeOfDay? _selectedTime;
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint("Initialisation de la page des rappels");
+  }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("Construction de l'interface utilisateur");
     return Scaffold(
+      appBar: AppBar(title: const Text('Liste des rappels')),
       body: Column(
         children: [
           Expanded(
@@ -28,18 +32,9 @@ class _ReminderListPageState extends State<ReminderListPage> {
                 return ListTile(
                   title: Text(
                       '${_reminders[index]['name']} - ${_reminders[index]['time']}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () => _showEditDialog(index),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _deleteReminder(index),
-                      ),
-                    ],
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () => _deleteReminder(index),
                   ),
                 );
               },
@@ -48,7 +43,7 @@ class _ReminderListPageState extends State<ReminderListPage> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
-              onPressed: _showAddReminderBottomSheet,
+              onPressed: _showAddReminderDialog,
               child: const Text('Ajouter un rappel'),
             ),
           ),
@@ -57,81 +52,14 @@ class _ReminderListPageState extends State<ReminderListPage> {
     );
   }
 
-  void _showAddReminderBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.only(
-              top: 30.0, bottom: 50.0, right: 10.0, left: 10.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Nom du médicament',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _timeController,
-                decoration: const InputDecoration(
-                  labelText: 'Heure du rappel',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: _addReminder,
-                    child: const Text('Ajouter'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Annuler'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _addReminder() {
-    if (_nameController.text.isNotEmpty && _timeController.text.isNotEmpty) {
-      setState(() {
-        _reminders.add({
-          'name': _nameController.text,
-          'time': _timeController.text,
-        });
-      });
-      _nameController.clear();
-      _timeController.clear();
-      Navigator.of(context).pop();
-    }
-  }
-
-  void _showEditDialog(int index) {
-    _nameController.text = _reminders[index]['name']!;
-    _timeController.text = _reminders[index]['time']!;
-
+  // Affichage de la boîte de dialogue pour ajouter un rappel
+  void _showAddReminderDialog() {
+    debugPrint("Affichage du dialogue pour ajouter un rappel");
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Modifier le rappel'),
+          title: const Text('Ajouter un rappel'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -143,27 +71,20 @@ class _ReminderListPageState extends State<ReminderListPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              TextField(
-                controller: _timeController,
-                decoration: const InputDecoration(
-                  labelText: 'Heure du rappel',
-                  border: OutlineInputBorder(),
+              ElevatedButton(
+                onPressed: _selectTime,
+                child: Text(
+                  _selectedTime == null
+                      ? 'Choisir une heure'
+                      : _selectedTime!.format(context),
                 ),
               ),
             ],
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                setState(() {
-                  _reminders[index] = {
-                    'name': _nameController.text,
-                    'time': _timeController.text,
-                  };
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text('Enregistrer'),
+              onPressed: _addReminder,
+              child: const Text('Ajouter'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -175,7 +96,47 @@ class _ReminderListPageState extends State<ReminderListPage> {
     );
   }
 
+  // Sélection de l'heure pour le rappel
+  Future<void> _selectTime() async {
+    debugPrint("Ouverture du sélecteur d'heure");
+    TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (pickedTime != null) {
+      setState(() {
+        _selectedTime = pickedTime;
+      });
+      debugPrint("Heure sélectionnée: ${_selectedTime!.format(context)}");
+    } else {
+      debugPrint("Aucune heure sélectionnée");
+    }
+  }
+
+  // Ajout du rappel dans la liste
+  void _addReminder() {
+    if (_nameController.text.isNotEmpty && _selectedTime != null) {
+      String formattedTime = _selectedTime!.format(context);
+      debugPrint("Ajout du rappel: ${_nameController.text} à ${formattedTime}");
+
+      setState(() {
+        _reminders.add({
+          'name': _nameController.text,
+          'time': formattedTime,
+        });
+      });
+
+      _nameController.clear();
+      _selectedTime = null;
+      Navigator.of(context).pop();
+    } else {
+      debugPrint("Nom ou heure manquants lors de l'ajout du rappel");
+    }
+  }
+
+  // Suppression d'un rappel
   void _deleteReminder(int index) {
+    debugPrint("Suppression du rappel à l'index: $index");
     setState(() {
       _reminders.removeAt(index);
     });
