@@ -1,168 +1,100 @@
-// ignore_for_file: unnecessary_brace_in_string_interps
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../models/reminder.dart';
+import '../components/reminder_dialog.dart';
+import '../utils/reminder_storage.dart'; // Assurez-vous d'importer ReminderStorage
 
-class ReminderListPage extends StatefulWidget {
-  const ReminderListPage({super.key});
-
+class ReminderPage extends StatefulWidget {
   @override
-  // ignore: library_private_types_in_public_api
-  _ReminderListPageState createState() => _ReminderListPageState();
+  _ReminderPageState createState() => _ReminderPageState();
 }
 
-class _ReminderListPageState extends State<ReminderListPage> {
-  final List<Map<String, String>> _reminders = [];
-  final TextEditingController _nameController = TextEditingController();
-  TimeOfDay? _selectedTime;
+class _ReminderPageState extends State<ReminderPage> {
+  List<Reminder> _reminders = [];
 
   @override
   void initState() {
     super.initState();
     _loadReminders();
-    debugPrint("Initialisation de la page des rappels");
   }
 
+  // Charger les rappels depuis SharedPreferences
   Future<void> _loadReminders() async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? remindersJson = prefs.getStringList('reminders');
-    if (remindersJson != null) {
-      setState(() {
-        _reminders.clear();
-        _reminders.addAll(remindersJson.map((r) {
-          List<String> parts = r.split('|');
-          return {'name': parts[0], 'time': parts[1]};
-        }));
-      });
-    }
+    List<Reminder> loadedReminders = await ReminderStorage.loadReminders();
+    setState(() {
+      _reminders = loadedReminders;
+    });
   }
 
-  Future<void> _saveReminders() async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String> remindersJson =
-        _reminders.map((r) => '${r['name']}|${r['time']}').toList();
-    await prefs.setStringList('reminders', remindersJson);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    debugPrint("Construction de l'interface utilisateur");
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: _reminders.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(
-                      '${_reminders[index]['name']} - ${_reminders[index]['time']}'),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _deleteReminder(index),
-                  ),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: _showAddReminderDialog,
-              child: const Text('Ajouter un rappel'),
-            ),
-          ),
-        ],
+  void _addReminder() {
+    showDialog(
+      context: context,
+      builder: (context) => ReminderDialog(
+        onSave: (reminder) async {
+          setState(() {
+            _reminders.add(reminder);
+          });
+          // Sauvegarder la nouvelle liste de rappels dans SharedPreferences
+          await ReminderStorage.saveReminders(_reminders);
+        },
       ),
     );
   }
 
-  // Affichage de la boîte de dialogue pour ajouter un rappel
-  void _showAddReminderDialog() {
-    debugPrint("Affichage du dialogue pour ajouter un rappel");
+  void _editReminder(int index) {
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Ajouter un rappel'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: 'Nom du médicament',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: _selectTime,
-                child: Text(
-                  _selectedTime == null
-                      ? 'Choisir une heure'
-                      : _selectedTime!.format(context),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: _addReminder,
-              child: const Text('Ajouter'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Annuler'),
-            ),
-          ],
-        );
-      },
+      builder: (context) => ReminderDialog(
+        initialReminder: _reminders[index],
+        onSave: (updatedReminder) async {
+          setState(() {
+            _reminders[index] = updatedReminder;
+          });
+          // Sauvegarder la liste mise à jour dans SharedPreferences
+          await ReminderStorage.saveReminders(_reminders);
+        },
+      ),
     );
   }
 
-  // Sélection de l'heure pour le rappel
-  Future<void> _selectTime() async {
-    debugPrint("Ouverture du sélecteur d'heure");
-    TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (pickedTime != null) {
-      setState(() {
-        _selectedTime = pickedTime;
-      });
-      debugPrint("Heure sélectionnée: ${_selectedTime!.format(context)}");
-    } else {
-      debugPrint("Aucune heure sélectionnée");
-    }
-  }
-
-  void _addReminder() {
-    if (_nameController.text.isNotEmpty && _selectedTime != null) {
-      String formattedTime = _selectedTime!.format(context);
-      debugPrint("Ajout du rappel: ${_nameController.text} à ${formattedTime}");
-
-      setState(() {
-        _reminders.add({'name': _nameController.text, 'time': formattedTime});
-      });
-      _saveReminders();
-
-      _nameController.clear();
-      _selectedTime = null;
-      Navigator.of(context).pop();
-    } else {
-      debugPrint("Nom ou heure manquants lors de l'ajout du rappel");
-    }
-  }
-
-  // Suppression d'un rappel
-  void _deleteReminder(int index) {
-    debugPrint("Suppression du rappel à l'index: $index");
+  void _deleteReminder(int index) async {
     setState(() {
       _reminders.removeAt(index);
     });
-    _saveReminders();
+    // Sauvegarder la liste mise à jour après suppression dans SharedPreferences
+    await ReminderStorage.saveReminders(_reminders);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Rappels")),
+      body: ListView.builder(
+        itemCount: _reminders.length,
+        itemBuilder: (context, index) {
+          final reminder = _reminders[index];
+          return ListTile(
+            title: Text("${reminder.name} - ${reminder.time}"),
+            subtitle: Text("Récurrence: ${reminder.recurrence}"),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.edit, color: Colors.blue),
+                  onPressed: () => _editReminder(index),
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete, color: Colors.red),
+                  onPressed: () => _deleteReminder(index),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addReminder,
+        child: Icon(Icons.add),
+      ),
+    );
   }
 }

@@ -12,7 +12,7 @@ Map<String, WidgetBuilder> appRoutes = {
   '/': (context) => const LoginPage(),
   '/home': (context) => const AppLayout(child: HomePage()),
   '/rappels': (context) =>
-      const AppLayout(child: ReminderListPage()), // Enveloppé dans AppLayout
+      AppLayout(child: ReminderPage()), // Enveloppé dans AppLayout
   '/profile': (context) =>
       const AppLayout(child: ProfilePage()), // Enveloppé dans AppLayout
   '/signup': (context) => const SignUpPage(),

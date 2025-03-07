@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../components/reminder_dialog.dart'; // Importez ReminderDialog ici
+import '../models/reminder.dart'; // Assurez-vous que le modèle Reminder est également importé
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -220,38 +223,27 @@ class _HistoriqueListPageState extends State<HistoriqueListPage> {
   }
 
   // Fonction pour ajouter un rappel (à adapter selon la logique de votre application)
+  // Fonction pour ajouter un rappel (affichage du ReminderDialog)
   void _addReminder(dynamic produit) {
-    // Cette fonction pourrait ouvrir un autre dialogue ou une page
-    // pour permettre à l'utilisateur de définir un rappel pour le produit
+    print(
+        "Dialog d'ajout de rappel lancé"); // Débogage pour vérifier si la fonction est appelée
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          icon: const Icon(Icons.notifications),
-          title: const Text('Ajouter un rappel'),
-          content: const Text(
-              'Vous pouvez maintenant définir un rappel pour ce produit.'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                // Ici, ajouter la logique pour enregistrer le rappel
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Rappel ajouté pour ce produit!')),
-                );
-              },
-              child: const Text('Ajouter'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Annuler'),
-            ),
-          ],
+        return ReminderDialog(
+          initialReminder: null,
+          onSave: (reminder) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content:
+                      Text('Rappel ajouté pour ${produit['nom_produit']}!')),
+            );
+            Navigator.of(context).pop();
+          },
         );
       },
     );
   }
+
+  //
 }
