@@ -1,9 +1,13 @@
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ReminderListPage extends StatefulWidget {
   const ReminderListPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ReminderListPageState createState() => _ReminderListPageState();
 }
 
@@ -15,14 +19,35 @@ class _ReminderListPageState extends State<ReminderListPage> {
   @override
   void initState() {
     super.initState();
+    _loadReminders();
     debugPrint("Initialisation de la page des rappels");
+  }
+
+  Future<void> _loadReminders() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? remindersJson = prefs.getStringList('reminders');
+    if (remindersJson != null) {
+      setState(() {
+        _reminders.clear();
+        _reminders.addAll(remindersJson.map((r) {
+          List<String> parts = r.split('|');
+          return {'name': parts[0], 'time': parts[1]};
+        }));
+      });
+    }
+  }
+
+  Future<void> _saveReminders() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> remindersJson =
+        _reminders.map((r) => '${r['name']}|${r['time']}').toList();
+    await prefs.setStringList('reminders', remindersJson);
   }
 
   @override
   Widget build(BuildContext context) {
     debugPrint("Construction de l'interface utilisateur");
     return Scaffold(
-      appBar: AppBar(title: const Text('Liste des rappels')),
       body: Column(
         children: [
           Expanded(
@@ -114,18 +139,15 @@ class _ReminderListPageState extends State<ReminderListPage> {
     }
   }
 
-  // Ajout du rappel dans la liste
   void _addReminder() {
     if (_nameController.text.isNotEmpty && _selectedTime != null) {
       String formattedTime = _selectedTime!.format(context);
       debugPrint("Ajout du rappel: ${_nameController.text} à ${formattedTime}");
 
       setState(() {
-        _reminders.add({
-          'name': _nameController.text,
-          'time': formattedTime,
-        });
+        _reminders.add({'name': _nameController.text, 'time': formattedTime});
       });
+      _saveReminders();
 
       _nameController.clear();
       _selectedTime = null;
@@ -141,5 +163,6 @@ class _ReminderListPageState extends State<ReminderListPage> {
     setState(() {
       _reminders.removeAt(index);
     });
+    _saveReminders();
   }
 }
