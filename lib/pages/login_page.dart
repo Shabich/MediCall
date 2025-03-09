@@ -167,6 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                           };
 
                           try {
+                            //Premiere requete pour faire la verification avec le body
                             final response = await http.post(
                               Uri.parse(
                                   'http://localhost:3000/api/auth/signin'),
@@ -181,6 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                                     null; // Réinitialiser le message d'erreur
                               });
 
+                              //Deuxieme requete pour récuperer les données du user
                               final dataUser = await http.post(
                                 Uri.parse(
                                     'http://localhost:3000/api/users/info'),

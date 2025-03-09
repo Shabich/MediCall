@@ -71,7 +71,6 @@ class _HistoriqueListPageState extends State<HistoriqueListPage> {
       appBar: AppBar(
         title: const Text("Historique des Commandes"),
         centerTitle: false,
-        backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
