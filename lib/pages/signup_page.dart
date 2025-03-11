@@ -65,8 +65,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<void> _signUp() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final url = Uri.parse(
-          'http://localhost:3000/api/auth/signup'); // Modifier localhost si besoin
+      final url = Uri.parse('http://localhost:3000/api/auth/signup');
       final body = jsonEncode({
         'nom': _nameController.text,
         'prenom': _firstNameController.text,
@@ -105,8 +104,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future<void> _fetchUserInfo() async {
-    final url = Uri.parse(
-        'http://localhost:3000/api/users/info'); // Modifier localhost si besoin
+    final url = Uri.parse('http://localhost:3000/api/users/info');
     final body = jsonEncode({
       'adresse_mail': _emailController.text,
       'password': _passwordController.text,

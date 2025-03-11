@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/reminder.dart';
 import '../components/reminder_dialog.dart';
-import '../utils/reminder_storage.dart'; // Assurez-vous d'importer ReminderStorage
+import '../utils/reminder_storage.dart';
 
 class ReminderPage extends StatefulWidget {
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppLayout extends StatelessWidget {
   final Widget child;
@@ -71,8 +72,11 @@ class AppLayout extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.lock_outline),
               title: const Text('Se déconnecter'),
-              onTap: () {
+              onTap: () async {
                 Navigator.of(context).pop();
+                SharedPreferences preferences =
+                    await SharedPreferences.getInstance();
+                await preferences.clear();
                 Navigator.pushReplacementNamed(context, '/');
               },
             ),

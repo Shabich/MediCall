@@ -191,7 +191,7 @@ class _ProfilePageState extends State<ProfilePage> {
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               filled: true,
-              fillColor: Color.fromARGB(255, 236, 242, 246),
+              fillColor: Color.fromARGB(255, 240, 242, 255),
             ),
           ),
         ],
@@ -223,7 +223,7 @@ class _ProfilePageState extends State<ProfilePage> {
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               filled: true,
-              fillColor: Colors.grey[200],
+              fillColor: const Color.fromARGB(255, 240, 242, 255),
               errorText: (!_passwordsMatch &&
                       controller == _confirmNewPasswordController)
                   ? 'Les mots de passe ne correspondent pas'
