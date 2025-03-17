@@ -134,7 +134,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
       if (response.statusCode == 200) {
         await _saveUserData(json.decode(response.body));
-        Navigator.pushReplacementNamed(context, '/medicaments');
+        Navigator.pushReplacementNamed(context, '/rappels');
       } else {
         final responseData = json.decode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -155,7 +155,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _buildProfileField(String label, TextEditingController controller,
       {bool isPassword = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: TextFormField(
         controller: controller,
         obscureText: isPassword,
@@ -163,7 +163,9 @@ class _SignUpPageState extends State<SignUpPage> {
             label == 'Email' ? TextInputType.emailAddress : TextInputType.text,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -180,25 +182,22 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _buildDatePickerField(String label, TextEditingController controller) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey)),
-          const SizedBox(height: 4),
           TextField(
             controller: controller,
             readOnly: true,
             onTap: () => _selectDate(context),
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              filled: true,
-              fillColor: Color.fromARGB(255, 240, 242, 255),
-              suffixIcon: Icon(Icons.calendar_today),
+            decoration: InputDecoration(
+              labelText: label,
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+              // Couleur de fond
+              suffixIcon: const Icon(Icons.calendar_today),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
             ),
           ),
         ],
@@ -215,13 +214,18 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const CircleAvatar(
                   radius: 50,
                   backgroundImage: AssetImage('lib/assets/woman.png'),
                 ),
                 const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/login');
+                  },
+                  child: const Text('Déjà un compte ? Se connecter'),
+                ),
                 Form(
                   key: _formKey,
                   child: Column(
@@ -239,13 +243,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       ElevatedButton(
                         onPressed: _signUp,
                         child: const Text("S'inscrire"),
-                      ),
-                      const SizedBox(height: 10),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Déjà un compte ? Se connecter'),
                       ),
                     ],
                   ),

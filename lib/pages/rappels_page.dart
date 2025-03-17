@@ -69,7 +69,11 @@ class _ReminderPageState extends State<ReminderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Rappels")),
+      appBar: AppBar(
+        title: Text("Rappels"),
+        automaticallyImplyLeading:
+            false, // Empêche l'affichage de la flèche de retour
+      ),
       body: ListView.builder(
         itemCount: _reminders.length,
         itemBuilder: (context, index) {

@@ -73,6 +73,8 @@ class _HistoriqueListPageState extends State<HistoriqueListPage> {
         centerTitle: false,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
+        automaticallyImplyLeading:
+            false, // Empêche l'affichage de la flèche de retour
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -95,7 +97,7 @@ class _HistoriqueListPageState extends State<HistoriqueListPage> {
                                   borderRadius: BorderRadius.circular(16.0),
                                 ),
                                 elevation: 5,
-                                color: Colors.white,
+                                // color: Colors.white,
                                 margin: const EdgeInsets.symmetric(
                                     vertical: 8.0, horizontal: 12.0),
                                 child: Padding(
@@ -199,7 +201,7 @@ class _HistoriqueListPageState extends State<HistoriqueListPage> {
                           },
                           icon: const Icon(
                             Icons.notifications,
-                            color: Colors.blue, // Couleur de l'icône
+                            color: Color(0xFF4F4CD2), // Couleur de l'icône
                           ),
                         ),
                       ),

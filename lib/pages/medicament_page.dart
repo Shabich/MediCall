@@ -97,6 +97,8 @@ class _MedicamentListPageState extends State<MedicamentListPage> {
       appBar: AppBar(
         title: const Text("Medicaments de GSB"),
         centerTitle: false,
+        automaticallyImplyLeading:
+            false, // Empêche l'affichage de la flèche de retour
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

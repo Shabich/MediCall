@@ -118,6 +118,12 @@ class _LoginPageState extends State<LoginPage> {
                   style: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
               const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/signup');
+                },
+                child: const Text("Pas encore de compte ? S'en créer un"),
+              ),
               Form(
                 key: _formKey,
                 child: Column(
@@ -201,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                                   .body)); // Décoder la réponse JSON en Map
 
                               Navigator.pushReplacementNamed(
-                                  context, '/medicaments');
+                                  context, '/rappels');
                             } else {
                               setState(() {
                                 _passwordController
@@ -222,13 +228,6 @@ class _LoginPageState extends State<LoginPage> {
                         }
                       },
                       child: const Text('Se connecter'),
-                    ),
-                    const SizedBox(height: 10),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
-                      },
-                      child: const Text('Créer un compte'),
                     ),
                   ],
                 ),

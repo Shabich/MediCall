@@ -205,11 +205,12 @@ class _ProfilePageState extends State<ProfilePage> {
             controller: controller,
             readOnly: true,
             onTap: () => _selectDate(context),
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              filled: true,
-              fillColor: Color.fromARGB(255, 240, 242, 255),
-              suffixIcon: Icon(Icons.calendar_today),
+            decoration: InputDecoration(
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+              suffixIcon: const Icon(Icons.calendar_today),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
             ),
           ),
         ],
@@ -219,7 +220,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildProfileField(String label, TextEditingController controller) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -228,13 +229,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Colors.grey)),
-          const SizedBox(height: 4),
           TextField(
             controller: controller,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              filled: true,
-              fillColor: Color.fromARGB(255, 240, 242, 255),
+            decoration: InputDecoration(
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
             ),
           ),
         ],
@@ -244,7 +245,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildPasswordField(String label, TextEditingController controller) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -253,7 +254,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Colors.grey)),
-          const SizedBox(height: 4),
           TextField(
             controller: controller,
             obscureText: true,
@@ -264,9 +264,10 @@ class _ProfilePageState extends State<ProfilePage> {
               });
             },
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              filled: true,
-              fillColor: const Color.fromARGB(255, 240, 242, 255),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
               errorText: (!_passwordsMatch &&
                       controller == _confirmNewPasswordController)
                   ? 'Les mots de passe ne correspondent pas'
