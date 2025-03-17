@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -60,6 +61,20 @@ class _SignUpPageState extends State<SignUpPage> {
       debugPrint("Données utilisateur enregistrées avec succès.");
     } catch (e) {
       debugPrint("Erreur lors de l'accès à SharedPreferences: $e");
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        _birthDateController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
     }
   }
 
@@ -163,6 +178,34 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  Widget _buildDatePickerField(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label,
+              style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey)),
+          const SizedBox(height: 4),
+          TextField(
+            controller: controller,
+            readOnly: true,
+            onTap: () => _selectDate(context),
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              filled: true,
+              fillColor: Color.fromARGB(255, 240, 242, 255),
+              suffixIcon: Icon(Icons.calendar_today),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -188,7 +231,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       _buildProfileField('Email', _emailController),
                       _buildProfileField('Adresse', _addressController),
                       _buildProfileField('Téléphone', _phoneController),
-                      _buildProfileField(
+                      _buildDatePickerField(
                           'Date de naissance', _birthDateController),
                       _buildProfileField('Mot de passe', _passwordController,
                           isPassword: true),
