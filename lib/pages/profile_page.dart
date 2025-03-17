@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -44,6 +45,20 @@ class _ProfilePageState extends State<ProfilePage> {
           prefs.getString('date_naissance')?.substring(0, 10) ?? '';
     });
     debugPrint("Données utilisateur chargées: $_oldEmail");
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        _birthDateController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
   }
 
   Future<void> _saveProfile(String currentPassword) async {
@@ -148,7 +163,7 @@ class _ProfilePageState extends State<ProfilePage> {
             _buildProfileField('Email', _emailController),
             _buildProfileField('Adresse', _addressController),
             _buildProfileField('Téléphone', _phoneController),
-            _buildProfileField('Date de naissance', _birthDateController),
+            _buildDatePickerField('Date de naissance', _birthDateController),
             if (_isEditing) ...[
               _buildPasswordField(
                   'Nouveau mot de passe', _newPasswordController),
@@ -170,6 +185,34 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildDatePickerField(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label,
+              style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey)),
+          const SizedBox(height: 4),
+          TextField(
+            controller: controller,
+            readOnly: true,
+            onTap: () => _selectDate(context),
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              filled: true,
+              fillColor: Color.fromARGB(255, 240, 242, 255),
+              suffixIcon: Icon(Icons.calendar_today),
+            ),
+          ),
+        ],
       ),
     );
   }
