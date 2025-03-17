@@ -107,9 +107,12 @@ La console Firebase permet de :
 - Suivre les événements analytiques liés aux rappels de médicaments.
 
 ## Screenshots
-![Écran du menu ](lib/assets/readme3.png)
-![Ecran du profil](lib/assets/readme2.png)
-![Écran des rappels](lib/assets/readme1.png)
+<p align="center">
+  <img src="lib/assets/readme3.png" width="30%" alt="Écran du menu">
+  <img src="lib/assets/readme2.png" width="30%" alt="Écran du profil">
+  <img src="lib/assets/readme1.png" width="30%" alt="Écran des rappels">
+</p>
+
 ## Contribution
 Toute contribution est la bienvenue ! Forke ce projet et soumets une **pull request**.
 
