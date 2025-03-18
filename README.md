@@ -75,13 +75,11 @@ MediCall est une application mobile développée avec **Flutter**, disponible su
    ```
 
 ## Fonctionnalités
-### 1. Authentification Firebase
-Gestion des comptes utilisateurs avec Firebase Authentication.
 
-### 2. Gestion des rappels (Stockage Local)
+### 1. Gestion des rappels (Stockage Local)
 Utilisation de `SharedPreferences` pour stocker les rappels localement.
 
-### 3. Notifications Push (FCM)
+### 2. Notifications Push (FCM)
 - Demande d’autorisation pour recevoir des notifications.
 - Réception et affichage des notifications en arrière-plan.
 
