@@ -85,11 +85,11 @@ class _ReminderPageState extends State<ReminderPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: Icon(Icons.edit, color: Colors.blue),
+                  icon: Icon(Icons.edit, color: Color(0xFF4F4CD2)),
                   onPressed: () => _editReminder(index),
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
+                  icon: Icon(Icons.delete, color: Color(0xFF4F4CD2)),
                   onPressed: () => _deleteReminder(index),
                 ),
               ],
