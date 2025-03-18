@@ -32,7 +32,7 @@ class AppLayout extends StatelessWidget {
               title: const Text('Accueil'),
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.pushReplacementNamed(context, '/home');
+                Navigator.pushReplacementNamed(context, '/menu');
               },
             ),
             const Divider(),
@@ -77,7 +77,7 @@ class AppLayout extends StatelessWidget {
                 SharedPreferences preferences =
                     await SharedPreferences.getInstance();
                 await preferences.clear();
-                Navigator.pushReplacementNamed(context, '/');
+                Navigator.pushReplacementNamed(context, '/home');
               },
             ),
           ],

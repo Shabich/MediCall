@@ -10,9 +10,9 @@ import 'pages/profile_page.dart';
 import 'app_layout.dart'; // Import du layout
 
 Map<String, WidgetBuilder> appRoutes = {
-  '/': (context) => const HomePage(),
+  '/home': (context) => const HomePage(),
 
-  '/home': (context) => const AppLayout(
+  '/menu': (context) => const AppLayout(
       child: MenuPage()), // rajouter une page pour decrire l'application
 
   '/rappels': (context) =>
