@@ -89,6 +89,7 @@ class _SignUpPageState extends State<SignUpPage> {
         'num_tel': _phoneController.text,
         'date_naissance': _birthDateController.text,
         'password': _passwordController.text,
+        'id_t_pharmacie': null
       });
 
       try {
